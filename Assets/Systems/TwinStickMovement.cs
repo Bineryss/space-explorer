@@ -28,24 +28,6 @@ public class TwinStickMovement : MonoBehaviour
         input = GetComponent<PlayerInput>();
     }
 
-    void Start()
-    {
-        // controls.Player.Move.performed += (context) =>
-        // {
-        //     Debug.Log("move player with callback");
-        //     Vector2 movement2 = context.ReadValue<Vector2>();
-        //     Vector3 move = new Vector3(movement2.x, 0, movement2.y);
-        //     controller.Move(move * Time.deltaTime * speed);
-        // };
-    }
-
-    // public void HandleMovement(InputAction.CallbackContext context)
-    // {
-    //     Vector2 movement2 = context.ReadValue<Vector2>();
-    //     Vector3 move = new Vector3(movement2.x, 0, movement2.y);
-    //     controller.Move(move * speed);
-    // }
-
     void OnEnable()
     {
         controls.Enable();

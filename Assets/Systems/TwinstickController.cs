@@ -9,6 +9,9 @@ public class ArcadeSpaceshipController : MonoBehaviour
     [SerializeField] private float acceleration = 15f;
     [SerializeField] private float deceleration = 10f;
 
+    [SerializeField] private float controllerDeadzone = 0.1f;
+    [SerializeField] private float gamepadRotationSmoothing = 1000f;
+
     [Header("Rotation Settings")]
     [SerializeField] private float rotationSpeed = 180f;
     [SerializeField] private bool useSlerpRotation = true;
@@ -53,7 +56,10 @@ public class ArcadeSpaceshipController : MonoBehaviour
         Vector3 moveDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
         if (moveDirection.magnitude > 0.1f)
         {
-            rb.AddForce(moveDirection * acceleration, ForceMode.Acceleration);
+            rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, moveDirection * moveSpeed, acceleration * Time.fixedDeltaTime);
+            // rb.AddForce(moveDirection * acceleration, ForceMode.VelocityChange);
+            Quaternion newRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, newRotation, gamepadRotationSmoothing * Time.fixedDeltaTime);
         }
         else
         {
@@ -68,7 +74,7 @@ public class ArcadeSpaceshipController : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(new Vector3(aimInput.x, 0, aimInput.y));
             if (useSlerpRotation)
             {
-                rb.rotation = Quaternion.Slerp(rb.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.fixedDeltaTime);
             }
             else
             {
