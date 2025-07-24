@@ -16,6 +16,11 @@ public class ArcadeSpaceshipController : MonoBehaviour
     [SerializeField] private float rotationSpeed = 180f;
     [SerializeField] private bool useSlerpRotation = true;
 
+    [Header("Banking Settings")]
+    [SerializeField] private float bankingAngle = 15f; // Maximum banking angle in degrees
+    [SerializeField] private float bankingSpeed = 5f;   // How fast the ship banks
+
+    private float currentBankingAngle = 0f; // Current banking angle
 
     [SerializeField] private Vector2 movementInput;
     [SerializeField] private Vector2 aimInput;
@@ -48,6 +53,7 @@ public class ArcadeSpaceshipController : MonoBehaviour
     void FixedUpdate()
     {
         MoveShip();
+        HandleMovingRotation();
         RotateShip();
     }
 
@@ -58,12 +64,43 @@ public class ArcadeSpaceshipController : MonoBehaviour
         {
             rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, moveDirection * moveSpeed, acceleration * Time.fixedDeltaTime);
             // rb.AddForce(moveDirection * acceleration, ForceMode.VelocityChange);
-            Quaternion newRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, newRotation, gamepadRotationSmoothing * Time.fixedDeltaTime);
         }
         else
         {
             rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, Vector3.zero, deceleration * Time.fixedDeltaTime);
+        }
+    }
+
+    private void HandleMovingRotation()
+    {
+        if (movementInput.magnitude > 0.1f)
+        {
+            // 1. Calculate base rotation toward movement direction
+            Vector3 moveDirection = new Vector3(movementInput.x, 0, movementInput.y).normalized;
+            Quaternion baseTargetRotation = Quaternion.LookRotation(moveDirection, Vector3.up);
+
+            // 2. Smooth banking transition
+            float targetBankingAngle = -movementInput.x * bankingAngle;
+            currentBankingAngle = Mathf.Lerp(currentBankingAngle, targetBankingAngle, bankingSpeed * Time.fixedDeltaTime);
+
+            // 3. Combine base rotation with banking
+            Quaternion bankingRotation = Quaternion.Euler(0, 0, currentBankingAngle);
+            Quaternion finalTargetRotation = baseTargetRotation * bankingRotation;
+
+            // 4. Apply smooth rotation
+            transform.rotation = Quaternion.RotateTowards(transform.rotation, finalTargetRotation, rotationSpeed * Time.fixedDeltaTime);
+        }
+        else
+        {
+            // Level out banking when not moving
+            currentBankingAngle = Mathf.Lerp(currentBankingAngle, 0f, bankingSpeed * Time.fixedDeltaTime);
+
+            if (Mathf.Abs(currentBankingAngle) > 0.1f)
+            {
+                Vector3 currentEuler = transform.rotation.eulerAngles;
+                Quaternion levelRotation = Quaternion.Euler(currentEuler.x, currentEuler.y, currentBankingAngle);
+                transform.rotation = Quaternion.Slerp(transform.rotation, levelRotation, bankingSpeed * Time.fixedDeltaTime);
+            }
         }
     }
 
