@@ -1,4 +1,3 @@
-
 using UnityEngine;
 
 public class SpaceshipVisualBanking : MonoBehaviour
@@ -6,8 +5,10 @@ public class SpaceshipVisualBanking : MonoBehaviour
     [Header("Banking Settings")]
     [SerializeField] private float bankingAngle = 45f;
     [SerializeField] private float bankingSpeed = 5f;
-    [SerializeField] private float angularVelocityScale = 100f;
+    [SerializeField] private float angularVelocityScale = 0.5f; // Much lower scale
     [SerializeField] private float directionSmoothTime = 0.1f;
+    [SerializeField] private float maxAngularVelocity = 180f; // Degrees per second
+    [SerializeField] private float angularVelocityDeadzone = 10f; // Ignore small angular velocities
     
     private float currentBankingAngle = 0f;
     private Vector2 smoothedDirection;
@@ -22,10 +23,10 @@ public class SpaceshipVisualBanking : MonoBehaviour
     
     void Update()
     {
-        ApplyAngularVelocityBanking();
+        ApplyProportionalAngularBanking();
     }
     
-    private void ApplyAngularVelocityBanking()
+    private void ApplyProportionalAngularBanking()
     {
         Vector2 movementInput = playerController.MovementInput;
         
@@ -33,19 +34,25 @@ public class SpaceshipVisualBanking : MonoBehaviour
         {
             Vector2 targetDirection = movementInput.normalized;
             
-            // Smooth the direction change
             smoothedDirection = Vector2.SmoothDamp(smoothedDirection, targetDirection, 
                                                  ref directionVelocity, directionSmoothTime);
             
-            // Calculate angular velocity
             float currentAngle = Mathf.Atan2(smoothedDirection.y, smoothedDirection.x) * Mathf.Rad2Deg;
             float angularVelocity = Mathf.DeltaAngle(previousAngle, currentAngle) / Time.deltaTime;
             
-            // Apply banking based on angular velocity
-            float targetBankingAngle = -angularVelocity * angularVelocityScale;
-            targetBankingAngle = Mathf.Clamp(targetBankingAngle, -bankingAngle, bankingAngle);
-            
-            currentBankingAngle = Mathf.Lerp(currentBankingAngle, targetBankingAngle, bankingSpeed * Time.deltaTime);
+            // Apply deadzone and normalize angular velocity
+            if (Mathf.Abs(angularVelocity) > angularVelocityDeadzone)
+            {
+                float normalizedAngularVelocity = Mathf.Clamp(angularVelocity / maxAngularVelocity, -1f, 1f);
+                float targetBankingAngle = -normalizedAngularVelocity * bankingAngle * angularVelocityScale;
+                
+                currentBankingAngle = Mathf.Lerp(currentBankingAngle, targetBankingAngle, bankingSpeed * Time.deltaTime);
+            }
+            else
+            {
+                // Gradually level out for small angular velocities
+                currentBankingAngle = Mathf.Lerp(currentBankingAngle, 0f, bankingSpeed * Time.deltaTime * 0.5f);
+            }
             
             previousAngle = currentAngle;
         }
