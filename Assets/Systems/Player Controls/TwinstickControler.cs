@@ -72,7 +72,6 @@ public class TwinstickControler : MonoBehaviour, ISpaceShipControler
             // rb.AddForce(moveDirection * acceleration, ForceMode.VelocityChange);
             rb.linearVelocity = Vector3.Lerp(rb.linearVelocity, moveDirection * moveSpeed, acceleration * Time.fixedDeltaTime);
 
-            Debug.Log($"Aim Magnitude: {aimInput.magnitude}, Gamepad Deadzone: {gamepadDeadzone}");
             if (aimInput.magnitude <= gamepadDeadzone)
             {
                 //ship rotation toward movement direction
@@ -109,7 +108,6 @@ public class TwinstickControler : MonoBehaviour, ISpaceShipControler
 
     private void RotateTowardsMouse()
     {
-        Debug.Log("mouse rotation");
         // Convert mouse screen position to world position
         Vector3 mouseWorldPos = ScreenToWorldPosition(mouseScreenPosition);
 
