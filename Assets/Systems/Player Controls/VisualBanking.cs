@@ -28,7 +28,7 @@ public class SpaceshipVisualBanking : MonoBehaviour
     void Start()
     {
         playerController = GetComponentInParent<ISpaceShipControler>();
-        parentTransform = transform.parent;
+        parentTransform = playerController.Transform;
     }
     
     void Update()

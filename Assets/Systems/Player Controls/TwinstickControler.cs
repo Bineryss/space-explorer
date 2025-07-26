@@ -16,9 +16,9 @@ public class TwinstickControler : MonoBehaviour, ISpaceShipControler
     [SerializeField] private float rotationSpeed = 180f;
     [SerializeField] private bool useSlerpRotation = true;
 
-    [Header("Banking Settings")]
-    [SerializeField] private float bankingAngle = 15f; // Maximum banking angle in degrees
-    [SerializeField] private float bankingSpeed = 5f;   // How fast the ship banks
+    [Header("Mouse Settings")]
+    [SerializeField] private Camera playerCamera;
+    [SerializeField] private float mouseRotationSpeed = 180f;
 
     [SerializeField] private Vector2 movementInput;
     [SerializeField] private Vector2 aimInput;
@@ -26,14 +26,23 @@ public class TwinstickControler : MonoBehaviour, ISpaceShipControler
 
     private SpaceshipActions inputActions;
     private Rigidbody rb;
+    private bool isGamepad;
+    private Vector2 mouseScreenPosition;
+
 
     public Vector2 MovementInput => movementInput;
     public Vector2 LookInput => aimInput;
+
+    public Transform Transform => transform;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody>();
         inputActions = new SpaceshipActions();
+        if (playerCamera == null)
+        {
+            playerCamera = Camera.main;
+        }
     }
 
     void OnEnable()
@@ -77,6 +86,18 @@ public class TwinstickControler : MonoBehaviour, ISpaceShipControler
 
     private void RotateShip()
     {
+        if (isGamepad)
+        {
+            RotateWithGamepad();
+        }
+        else
+        {
+            RotateTowardsMouse();
+        }
+    }
+
+    private void RotateWithGamepad()
+    {
         if (aimInput.magnitude > 0.1f)
         {
             Quaternion targetRotation = Quaternion.LookRotation(new Vector3(aimInput.x, 0, aimInput.y));
@@ -89,6 +110,39 @@ public class TwinstickControler : MonoBehaviour, ISpaceShipControler
                 rb.MoveRotation(targetRotation);
             }
         }
+    }
+
+    private void RotateTowardsMouse()
+    {
+        // Convert mouse screen position to world position
+        Vector3 mouseWorldPos = ScreenToWorldPosition(mouseScreenPosition);
+
+        // Calculate direction from player to mouse position
+        Vector3 directionToMouse = (mouseWorldPos - transform.position).normalized;
+        directionToMouse.y = 0; // Keep it on the horizontal plane
+
+        if (directionToMouse.magnitude > 0.1f)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(directionToMouse);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, mouseRotationSpeed * Time.fixedDeltaTime);
+        }
+    }
+
+    private Vector3 ScreenToWorldPosition(Vector2 screenPosition)
+    {
+        // Create a ray from camera through mouse position
+        Ray ray = playerCamera.ScreenPointToRay(screenPosition);
+
+        // Create a plane at the player's Y position
+        Plane groundPlane = new(Vector3.up, transform.position.y);
+
+        // Find where the ray intersects the plane
+        if (groundPlane.Raycast(ray, out float distance))
+        {
+            return ray.GetPoint(distance);
+        }
+
+        return transform.position;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -104,6 +158,12 @@ public class TwinstickControler : MonoBehaviour, ISpaceShipControler
         if (context.performed || context.canceled)
         {
             aimInput = context.ReadValue<Vector2>();
+            isGamepad = context.control.device is Gamepad;
+
+            if (!isGamepad)
+            {
+                mouseScreenPosition = aimInput;
+            }
         }
     }
 
