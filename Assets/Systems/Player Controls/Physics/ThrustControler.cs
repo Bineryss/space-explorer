@@ -109,22 +109,6 @@ public class ImprovedThrustController : MonoBehaviour, ISpaceShipControler
         }
     }
 
-    // public void OnTriggerEnter(Collider other)
-    // {
-    //     if (other.CompareTag("slow"))
-    //     {
-    //         maxSpeed = 1f; // Slow down when entering a slow zone
-    //     }
-    // }
-
-    // public void OnTriggerExit(Collider other)
-    // {
-    //     if (other.CompareTag("slow"))
-    //     {
-    //         maxSpeed = 5f; // Restore max speed when leaving slow zone
-    //     }
-    // }
-
     private void LimitSpeed()
     {
         // Clamp velocity to max speed for snappy feel
@@ -182,7 +166,6 @@ public class ImprovedThrustController : MonoBehaviour, ISpaceShipControler
         }
     }
 
-    // Keep your existing input methods but add this improvement
     public void OnRotate(InputAction.CallbackContext context)
     {
         if (context.performed || context.canceled)
@@ -191,7 +174,6 @@ public class ImprovedThrustController : MonoBehaviour, ISpaceShipControler
         }
     }
 
-    // Your other input methods remain the same...
     public void OnThrust(InputAction.CallbackContext context)
     {
         if (context.performed || context.canceled)

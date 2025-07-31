@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class MinigRangeIndicator : MonoBehaviour
@@ -40,7 +41,7 @@ public class MinigRangeIndicator : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            lineRenderer.enabled = false;
+            lineRenderer.enabled = false; //TODO add fade out effect
         }
     }
 }
