@@ -895,12 +895,82 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4747dcfb88db8f04d813019909d6bced, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shipControls:
-  - {fileID: 2984573118874946952, guid: f6f4e0c91298a0542a02350652a0eda3, type: 3}
-  - {fileID: 2984573118874946952, guid: cbea923f6ab54d649ae48c8afc156b56, type: 3}
-  - {fileID: 7091734044224746587, guid: 1efe28ebcb093f14c9dd0ad6d276d938, type: 3}
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 2984573118874946952, guid: f6f4e0c91298a0542a02350652a0eda3, type: 3}
+    - {fileID: 7091734044224746587, guid: 1efe28ebcb093f14c9dd0ad6d276d938, type: 3}
+    - {fileID: 2984573118874946952, guid: cbea923f6ab54d649ae48c8afc156b56, type: 3}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: shipControls
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[ControlType, Assembly-CSharp],[UnityEngine.GameObject,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.EnumEqualityComparer`1[[ControlType, Assembly-CSharp]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 0
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 3
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 0
+    - Name: $v
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 1
+    - Name: $v
+      Entry: 10
+      Data: 1
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 3
+      Data: 2
+    - Name: $v
+      Entry: 10
+      Data: 2
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
   virtualCamera: {fileID: 379686424}
-  type: 0
+  type: 1
 --- !u!4 &1059294250
 Transform:
   m_ObjectHideFlags: 0

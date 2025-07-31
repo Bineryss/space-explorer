@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 3c9e1df4965b5cc4b8547d6a6b19aafa, type: 2}
+  - {fileID: 2100000, guid: 2d1f8bb72729b1942afa73a8a1d1d22e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,10 +98,10 @@ GameObject:
   - component: {fileID: 4454910563400979392}
   - component: {fileID: 2544361545922344667}
   - component: {fileID: 5262431565575506899}
-  - component: {fileID: 4639743587126305612}
+  - component: {fileID: 5915608289679925277}
   m_Layer: 0
   m_Name: Physics based Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -151,6 +151,12 @@ MonoBehaviour:
   thrustInput: 0
   aimInput: {x: 0, y: 0}
   isGamepad: 0
+  repulsionForce: 1500
+  repulsionRadius: 2
+  avoidanceLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  enableCollisionAvoidance: 1
   playerInput: {fileID: 2544361545922344667}
 --- !u!114 &2544361545922344667
 MonoBehaviour:
@@ -269,8 +275,8 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 84
   m_CollisionDetection: 1
---- !u!135 &4639743587126305612
-SphereCollider:
+--- !u!136 &5915608289679925277
+CapsuleCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -287,8 +293,10 @@ SphereCollider:
   m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
-  serializedVersion: 3
-  m_Radius: 1.88
+  serializedVersion: 2
+  m_Radius: 1.5
+  m_Height: 4
+  m_Direction: 2
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &8673728146146961915
 GameObject:
@@ -354,7 +362,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 7cc2bf4612b5c6048a2ddc628aa7133b, type: 2}
+  - {fileID: 2100000, guid: aaa5c0d3395fd7c4f8870c10b5c27857, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -460,7 +468,7 @@ PrefabInstance:
     - target: {fileID: -7511558181221131132, guid: fd893192a7cf4c349901339fb2eb9055, type: 3}
       propertyPath: 'm_Materials.Array.data[1]'
       value: 
-      objectReference: {fileID: 2100000, guid: 7cc2bf4612b5c6048a2ddc628aa7133b, type: 2}
+      objectReference: {fileID: 2100000, guid: aaa5c0d3395fd7c4f8870c10b5c27857, type: 2}
     - target: {fileID: 919132149155446097, guid: fd893192a7cf4c349901339fb2eb9055, type: 3}
       propertyPath: m_Name
       value: craft_speederB
