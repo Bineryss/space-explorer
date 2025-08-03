@@ -1,6 +1,6 @@
-using System.Collections;
 using UnityEngine;
 
+[RequireComponent(typeof(LineRenderer), typeof(Collider))]
 public class MinigRangeIndicator : MonoBehaviour
 {
     [SerializeField] private LineRenderer lineRenderer;
@@ -12,6 +12,13 @@ public class MinigRangeIndicator : MonoBehaviour
         CreateCircle();
         lineRenderer.enabled = false;
     }
+
+#if UNITY_EDITOR
+    private void OnValidate()
+    {
+        CreateCircle();
+    }
+#endif
 
 
     private void CreateCircle()
@@ -29,14 +36,14 @@ public class MinigRangeIndicator : MonoBehaviour
         }
     }
 
-        private void OnTriggerEnter(Collider other)
+    private void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
         {
             lineRenderer.enabled = true;
         }
     }
-    
+
     private void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))

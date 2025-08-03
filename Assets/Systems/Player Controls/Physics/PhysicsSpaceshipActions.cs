@@ -118,6 +118,15 @@ public partial class @PhysicsSpaceshipActions: IInputActionCollection2, IDisposa
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
+                },
+                {
+                    ""name"": ""Shoot"",
+                    ""type"": ""Button"",
+                    ""id"": ""b1a27f9c-0934-40da-a764-65ebe7907a20"",
+                    ""expectedControlType"": """",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -201,7 +210,7 @@ public partial class @PhysicsSpaceshipActions: IInputActionCollection2, IDisposa
                 {
                     ""name"": """",
                     ""id"": ""aeb5a67b-6690-46e2-b3d7-38dc67fe4ea1"",
-                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
@@ -228,6 +237,28 @@ public partial class @PhysicsSpaceshipActions: IInputActionCollection2, IDisposa
                     ""processors"": """",
                     ""groups"": "";Gamepad"",
                     ""action"": ""Aim"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f2cfc860-e215-4682-b1a4-fe3cb36f223c"",
+                    ""path"": ""<Keyboard>/space"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";KBM"",
+                    ""action"": ""Shoot"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""32b56ae2-3613-4909-90b2-076d1421227c"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": "";Gamepad"",
+                    ""action"": ""Shoot"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -269,6 +300,7 @@ public partial class @PhysicsSpaceshipActions: IInputActionCollection2, IDisposa
         m_ship_Rotate = m_ship.FindAction("Rotate", throwIfNotFound: true);
         m_ship_Thrust = m_ship.FindAction("Thrust", throwIfNotFound: true);
         m_ship_Aim = m_ship.FindAction("Aim", throwIfNotFound: true);
+        m_ship_Shoot = m_ship.FindAction("Shoot", throwIfNotFound: true);
     }
 
     ~@PhysicsSpaceshipActions()
@@ -352,6 +384,7 @@ public partial class @PhysicsSpaceshipActions: IInputActionCollection2, IDisposa
     private readonly InputAction m_ship_Rotate;
     private readonly InputAction m_ship_Thrust;
     private readonly InputAction m_ship_Aim;
+    private readonly InputAction m_ship_Shoot;
     /// <summary>
     /// Provides access to input actions defined in input action map "ship".
     /// </summary>
@@ -375,6 +408,10 @@ public partial class @PhysicsSpaceshipActions: IInputActionCollection2, IDisposa
         /// Provides access to the underlying input action "ship/Aim".
         /// </summary>
         public InputAction @Aim => m_Wrapper.m_ship_Aim;
+        /// <summary>
+        /// Provides access to the underlying input action "ship/Shoot".
+        /// </summary>
+        public InputAction @Shoot => m_Wrapper.m_ship_Shoot;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -410,6 +447,9 @@ public partial class @PhysicsSpaceshipActions: IInputActionCollection2, IDisposa
             @Aim.started += instance.OnAim;
             @Aim.performed += instance.OnAim;
             @Aim.canceled += instance.OnAim;
+            @Shoot.started += instance.OnShoot;
+            @Shoot.performed += instance.OnShoot;
+            @Shoot.canceled += instance.OnShoot;
         }
 
         /// <summary>
@@ -430,6 +470,9 @@ public partial class @PhysicsSpaceshipActions: IInputActionCollection2, IDisposa
             @Aim.started -= instance.OnAim;
             @Aim.performed -= instance.OnAim;
             @Aim.canceled -= instance.OnAim;
+            @Shoot.started -= instance.OnShoot;
+            @Shoot.performed -= instance.OnShoot;
+            @Shoot.canceled -= instance.OnShoot;
         }
 
         /// <summary>
@@ -517,5 +560,12 @@ public partial class @PhysicsSpaceshipActions: IInputActionCollection2, IDisposa
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnAim(InputAction.CallbackContext context);
+        /// <summary>
+        /// Method invoked when associated input action "Shoot" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
+        /// </summary>
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
+        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
+        void OnShoot(InputAction.CallbackContext context);
     }
 }
