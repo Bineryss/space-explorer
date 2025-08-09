@@ -64,6 +64,7 @@ namespace AI.BehaviourTree
 
         public override Status Process()
         {
+            Debug.Log($"Processing Sequence: {Name} - Current Child: {currentChild}/{Children.Count}");
             if (currentChild >= Children.Count)
             {
                 Reset();
@@ -120,6 +121,7 @@ namespace AI.BehaviourTree
             foreach (Node child in SortedChildren)
             {
                 Status status = child.Process();
+                Debug.Log($"Processing {child.Name} - Status: {status}");
                 if (status != Status.Failure)
                 {
                     return status;
@@ -144,6 +146,7 @@ namespace AI.BehaviourTree
 
         public override Status Process()
         {
+            Debug.Log($"Processing Leaf: {Name}");
             return strategy.Process();
         }
         public override void Reset() => strategy.Reset();

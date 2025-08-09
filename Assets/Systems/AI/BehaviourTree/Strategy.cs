@@ -34,6 +34,7 @@ namespace AI.BehaviourTree
                 Transform target = waypoints[currentWaypointIndex];
                 Vector3 agentTarget = target.position;
                 agentTarget.y = -100;
+                Debug.Log($"Setting destination for {target.name} - {agentTarget}");
                 agent.SetDestination(agentTarget);
 
                 if (isPathCalculated && agent.remainingDistance < 0.1f)
@@ -54,6 +55,43 @@ namespace AI.BehaviourTree
             {
                 currentWaypointIndex = 0;
                 agent.ResetPath();
+            }
+        }
+        public class MoveToTarget : IStrategy
+        {
+            private readonly NavMeshAgent agent;
+            private readonly Transform target;
+            private bool isPathCalculated;
+
+            public MoveToTarget(NavMeshAgent agent, Transform target)
+            {
+                this.agent = agent;
+                this.target = target;
+            }
+
+            public Node.Status Process()
+            {
+                if (isPathCalculated && agent.remainingDistance < 0.1f)
+                {
+                    isPathCalculated = false;
+                    return Node.Status.Success;
+                }
+
+                Vector3 agentTarget = target.position;
+                agentTarget.y = -100;
+                agent.SetDestination(agentTarget);
+
+                if (agent.pathPending)
+                {
+                    isPathCalculated = true;
+                }
+
+                return Node.Status.Running;
+            }
+
+            public void Reset()
+            {
+                isPathCalculated = false;
             }
         }
         public class Condition : IStrategy
