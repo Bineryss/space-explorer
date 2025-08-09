@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace AI.BehaviourTree
 {
+    //add repeat until fail
+    // add timebased leafs
+
     public class Node
     {
         public enum Status
@@ -84,6 +87,25 @@ namespace AI.BehaviourTree
             }
         }
     }
+    public class Inverter : Node
+    {
+        public Inverter(string name, int priority = 0) : base(name, priority) { }
+
+        public override Status Process()
+        {
+            switch (Children[currentChild].Process())
+            {
+                case Status.Running:
+                    return Status.Running;
+                case Status.Success:
+                    return Status.Failure;
+                case Status.Failure:
+                    return Status.Success;
+                default:
+                    return Status.Failure;
+            }
+        }
+    }
     public class Selector : Node
     {
         public Selector(string name, int priority = 0) : base(name, priority) { }
@@ -109,7 +131,7 @@ namespace AI.BehaviourTree
             }
         }
     }
-    public class PrioritySelector : Node
+    public class PrioritySelector : Selector
     {
         private List<Node> sortedChildren;
         List<Node> SortedChildren => sortedChildren ??= SortChildren();
@@ -133,6 +155,52 @@ namespace AI.BehaviourTree
         {
             base.Reset();
             sortedChildren = null;
+        }
+    }
+    public class RandomPrioritySelector : PrioritySelector
+    {
+        protected override List<Node> SortChildren()
+        {
+            var random = new System.Random();
+            return Children.OrderBy(child => random.Next()).ToList();
+        }
+        public RandomPrioritySelector(string name, int priority = 0) : base(name, priority)
+        {
+        }
+    }
+    public class UntilSuccess : Node
+    {
+        public UntilSuccess(string name, int priority = 0) : base(name, priority) { }
+
+        public override Status Process()
+        {
+            foreach (Node child in Children)
+            {
+                Status status = child.Process();
+                if (status != Status.Success)
+                {
+                    return Status.Running;
+                }
+            }
+            return Status.Success;
+        }
+    }
+
+    public class UntilFailure : Node
+    {
+        public UntilFailure(string name, int priority = 0) : base(name, priority) { }
+
+        public override Status Process()
+        {
+            foreach (Node child in Children)
+            {
+                Status status = child.Process();
+                if (status != Status.Failure)
+                {
+                    return Status.Running;
+                }
+            }
+            return Status.Failure;
         }
     }
     public class Leaf : Node

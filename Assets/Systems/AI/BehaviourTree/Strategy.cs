@@ -124,5 +124,35 @@ namespace AI.BehaviourTree
                 return Node.Status.Success;
             }
         }
+
+        public class TimedActionStrategy : IStrategy
+        {
+            private readonly Action action;
+            private readonly float duration;
+            private float elapsedTime;
+
+            public TimedActionStrategy(Action action, float duration)
+            {
+                this.action = action;
+                this.duration = duration;
+                elapsedTime = 0f;
+            }
+
+            public Node.Status Process()
+            {
+                if (elapsedTime < duration)
+                {
+                    elapsedTime += Time.deltaTime;
+                    return Node.Status.Running;
+                }
+                action();
+                return Node.Status.Success;
+            }
+
+            public void Reset()
+            {
+                elapsedTime = 0f;
+            }
+        }
     }
 }
