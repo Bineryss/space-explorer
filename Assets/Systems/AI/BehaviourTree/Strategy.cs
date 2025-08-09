@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -7,54 +8,83 @@ namespace AI.BehaviourTree
     public interface IStrategy
     {
         Node.Status Process();
-        void Reset();
-    }
-
-    public class PatrolStrategy : IStrategy
-    {
-        private readonly Transform entity;
-        private readonly NavMeshAgent agent;
-        private readonly List<Transform> waypoints;
-        private readonly float speed;
-        private int currentWaypointIndex;
-        private bool isPathCalculated;
-
-        public PatrolStrategy(Transform entity, NavMeshAgent agent, List<Transform> waypoints, float speed)
+        void Reset()
         {
-            this.entity = entity;
-            this.agent = agent;
-            this.waypoints = waypoints;
-            this.speed = speed;
-            currentWaypointIndex = 0;
+            //NOOP
         }
 
-        public Node.Status Process()
+        public class PatrolStrategy : IStrategy
         {
-            if (currentWaypointIndex == waypoints.Count) return Node.Status.Success;
+            private readonly NavMeshAgent agent;
+            private readonly List<Transform> waypoints;
+            private int currentWaypointIndex;
+            private bool isPathCalculated;
 
-            Transform target = waypoints[currentWaypointIndex];
-            Vector3 agentTarget = target.position;
-            agentTarget.y = -100;
-            agent.SetDestination(agentTarget);
-
-            if (isPathCalculated && agent.remainingDistance < 0.1f)
+            public PatrolStrategy(NavMeshAgent agent, List<Transform> waypoints)
             {
-                currentWaypointIndex++;
-                isPathCalculated = false;
+                this.agent = agent;
+                this.waypoints = waypoints;
+                currentWaypointIndex = 0;
             }
 
-            if(agent.pathPending)
+            public Node.Status Process()
             {
-                isPathCalculated = true;
+                if (currentWaypointIndex == waypoints.Count) return Node.Status.Success;
+
+                Transform target = waypoints[currentWaypointIndex];
+                Vector3 agentTarget = target.position;
+                agentTarget.y = -100;
+                agent.SetDestination(agentTarget);
+
+                if (isPathCalculated && agent.remainingDistance < 0.1f)
+                {
+                    currentWaypointIndex++;
+                    isPathCalculated = false;
+                }
+
+                if (agent.pathPending)
+                {
+                    isPathCalculated = true;
+                }
+
+                return Node.Status.Running;
             }
 
-            return Node.Status.Running;
+            public void Reset()
+            {
+                currentWaypointIndex = 0;
+                agent.ResetPath();
+            }
+        }
+        public class Condition : IStrategy
+        {
+            private readonly Func<bool> predicate;
+
+            public Condition(Func<bool> predicate)
+            {
+                this.predicate = predicate;
+            }
+
+            public Node.Status Process()
+            {
+                return predicate() ? Node.Status.Success : Node.Status.Failure;
+            }
         }
 
-        public void Reset()
+        public class ActionStrategy : IStrategy
         {
-            currentWaypointIndex = 0;
-            agent.ResetPath();
+            private readonly Action action;
+
+            public ActionStrategy(Action action)
+            {
+                this.action = action;
+            }
+
+            public Node.Status Process()
+            {
+                action();
+                return Node.Status.Success;
+            }
         }
     }
 }
